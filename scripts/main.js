@@ -1,4 +1,5 @@
 import { fetchComments, postComment } from "./api.js";
+import { renderComments } from "./renderComments.js";
 
 const name = document.getElementById("name-input");
 const text = document.getElementById("text-input");
@@ -23,73 +24,6 @@ fetchComments()
 // Добавлено в 3 домашке
 const sanitizeHtml = (htmlString) => {
   return htmlString.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-};
-
-// вынесена в модуль
-const renderComments = () => {
-  const likeButtonClass = "like-button";
-
-  if (isInitialLoading) {
-    document.getElementById("comments").innerHTML =
-      "Пожалуйста подождите, загружаю комментарии...";
-    return;
-  }
-
-  document.getElementById("comments").innerHTML = comments
-    .map((comment, index) => {
-      return `
-       <li class="comment" data-index="${index}">
-         <div class="comment-header">
-           <div>${sanitizeHtml(comment.name)}</div>
-           <div>${comment.date.toLocaleDateString()} ${comment.date.toLocaleTimeString()}</div>
-         </div>
-         <div class="comment-body">
-           <div class="comment-text">
-             ${sanitizeHtml(
-               comment.text
-                 .replaceAll("%BEGIN_QUOTE", "<div class='quote'>")
-                 .replaceAll("END_QUOTE%", "</div>")
-             )}
-           </div>
-         </div>
-         <div class="comment-footer">
-           <div class="likes">
-             <span class="likes-counter">${comment.likes}</span>
-             <button data-index="${index}" class="${likeButtonClass} ${
-        comment.isLiked ? "-active-like" : ""
-      } ${comment.isLikeLoading ? "-loading-like" : ""}"></button>
-           </div>
-         </div>
-       </li>
-     `;
-    })
-    .join("");
-
-  for (const likeButton of document.querySelectorAll(`.${likeButtonClass}`)) {
-    likeButton.addEventListener("click", (event) => {
-      event.stopPropagation();
-
-      const comment = comments[likeButton.dataset.index];
-      comment.isLikeLoading = true;
-
-      renderComments();
-      delay(2000).then(() => {
-        comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
-        comment.isLiked = !comment.isLiked;
-        comment.isLikeLoading = false;
-        renderComments();
-      });
-    });
-  }
-
-  for (const comment of document.querySelectorAll(".comment")) {
-    comment.addEventListener("click", () => {
-      text.value = `%BEGIN_QUOTE${comments[comment.dataset.index].name}:
-         ${comments[comment.dataset.index].text}END_QUOTE%
-
-`;
-    });
-  }
 };
 
 renderComments();
