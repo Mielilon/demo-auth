@@ -1,22 +1,18 @@
 import { delay } from "./utils.js";
 
-const host = "https://webdev-hw-api.vercel.app/api/v1/mielilon";
+// Изменили апи на 2-ю версию
+const host = "https://webdev-hw-api.vercel.app/api/v2/mielilon";
 
 export function fetchComments() {
   return fetch(host + "/comments")
     .then((res) => res.json())
     .then((responseData) => {
-      // Преобразовываем данные из формата api в формат приложения
       const appComments = responseData.comments.map((comment) => {
         return {
-          // Достаем имя автора
           name: comment.author.name,
-          // Преобразовываем дату-строку в Date
           date: new Date(comment.date),
           text: comment.text,
           likes: comment.likes,
-          // В api пока вообще нет признака лайкнутости
-          // Поэтому пока добавляем заглушку
           isLiked: false,
         };
       });
