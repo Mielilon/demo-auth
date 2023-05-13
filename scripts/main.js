@@ -17,13 +17,13 @@ fetchComments()
   .then((data) => {
     comments = data;
     isInitialLoading = false;
-    renderComments(app, isInitialLoading, comments);
+    renderComments(app, isPosting, isInitialLoading, comments);
   })
   .catch((error) => {
     alert(error.message);
   });
 
-renderComments(app, isInitialLoading, comments);
+renderComments(app, isPosting, isInitialLoading, comments);
 
 const addButton = document.getElementById("add-button");
 
@@ -36,7 +36,7 @@ const handlePostClick = () => {
   isPosting = true;
   document.querySelector(".form-loading").style.display = "block";
   document.querySelector(".add-form").style.display = "none";
-  renderComments(app, isInitialLoading, comments);
+  renderComments(app, isPosting, isInitialLoading, comments);
 
   postComment(text.value, name.value)
     .then((data) => {
@@ -46,7 +46,7 @@ const handlePostClick = () => {
       document.querySelector(".add-form").style.display = "flex";
       isPosting = false;
       comments = data;
-      renderComments(app, isInitialLoading, comments);
+      renderComments(app, isPosting, isInitialLoading, comments);
     })
     .catch((error) => {
       document.querySelector(".form-loading").style.display = "none";
@@ -70,7 +70,7 @@ const handlePostClick = () => {
       }
     });
 
-  renderComments(app, isInitialLoading, comments);
+  renderComments(app, isPosting, isInitialLoading, comments);
 };
 
 // addButton.addEventListener("click", handlePostClick);
