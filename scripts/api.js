@@ -2,6 +2,7 @@ import { delay } from "./utils.js";
 
 // Изменили апи на 2-ю версию
 const host = "https://webdev-hw-api.vercel.app/api/v2/mielilon";
+const loginHost = "https://webdev-hw-api.vercel.app/api/user/login";
 
 export function fetchComments() {
   return fetch(host + "/comments")
@@ -19,6 +20,20 @@ export function fetchComments() {
 
       return appComments;
     });
+}
+
+export function fetchLogin(login, password) {
+  return fetch(loginHost, {
+    method: "POST",
+    body: JSON.stringify({
+      login,
+      password,
+    }),
+  }).then((response) => {
+    // Нужно сделать обработку ошибок
+
+    return response.json();
+  });
 }
 
 export function postComment(text, name) {

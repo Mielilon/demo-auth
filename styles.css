@@ -182,3 +182,7 @@ body {
   justify-content: center;
   color: white;
 }
+
+.add-form-login {
+  margin-bottom: 20px;
+}

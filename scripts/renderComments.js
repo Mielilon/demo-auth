@@ -1,7 +1,14 @@
+import { renderLogin } from "./renderLogin.js";
 import { sanitizeHtml } from "./utils.js";
 import { delay } from "./utils.js";
 
-export const renderComments = (app, isPosting, isInitialLoading, comments) => {
+export const renderComments = (
+  app,
+  isPosting,
+  isInitialLoading,
+  comments,
+  user
+) => {
   const likeButtonClass = "like-button";
 
   const commentsHTML = comments
@@ -43,10 +50,35 @@ export const renderComments = (app, isPosting, isInitialLoading, comments) => {
           : commentsHTML
       }
       </ul>
-        <div class="form-loading" style="margin-top: 20px">
-          Что бы добавить комментарий, <a href='#' id="go-to-login" href="">авторизуйтесь</a>
-        </div>
-    </div>`;
+      ${
+        user
+          ? `
+          <div class="add-form">
+            <input
+              type="text"
+              class="add-form-name"
+              placeholder="Введите ваше имя"
+              id="name-input"
+              value="${user.name}"
+              disabled
+            />
+            <textarea
+              type="textarea"
+              class="add-form-text"
+              placeholder="Введите ваш коментарий"
+              rows="4"
+              id="text-input"
+            ></textarea>
+            <div class="add-form-row">
+              <button id="add-button" class="add-form-button">Написать</button>
+            </div>
+          </div>
+      `
+          : `<div class="form-loading" style="margin-top: 20px">
+                Что бы добавить комментарий, <a href='#' id="go-to-login" href="">авторизуйтесь</a>
+              </div>`
+      }
+      </div>`;
 
   app.innerHTML = appHtml;
 
@@ -72,6 +104,14 @@ export const renderComments = (app, isPosting, isInitialLoading, comments) => {
         const text = document.getElementById("text-input");
         text.value = `%BEGIN_QUOTE${comments[comment.dataset.index].name}:
          ${comments[comment.dataset.index].text}END_QUOTE%`;
+      });
+    }
+
+    if (!user) {
+      const goToLogin = document.getElementById("go-to-login");
+      goToLogin.addEventListener("click", (event) => {
+        event.preventDefault();
+        renderLogin(app, isPosting, isInitialLoading, comments);
       });
     }
   }
