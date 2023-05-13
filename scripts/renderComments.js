@@ -1,3 +1,4 @@
+import { postComment } from "./api.js";
 import { renderLogin } from "./renderLogin.js";
 import { sanitizeHtml } from "./utils.js";
 import { delay } from "./utils.js";
@@ -95,7 +96,7 @@ export const renderComments = (
             : comment.likes + 1;
           comment.isLiked = !comment.isLiked;
           comment.isLikeLoading = false;
-          renderComments(app, isPosting, isInitialLoading, comments);
+          renderComments(app, isPosting, isInitialLoading, comments, user);
         });
       });
     }
@@ -111,7 +112,20 @@ export const renderComments = (
       const goToLogin = document.getElementById("go-to-login");
       goToLogin.addEventListener("click", (event) => {
         event.preventDefault();
-        renderLogin(app, isPosting, isInitialLoading, comments);
+        renderLogin(app, isPosting, isInitialLoading, comments, user);
+      });
+    }
+
+    if (user) {
+      const addButton = document.getElementById("add-button");
+      addButton.addEventListener("click", () => {
+        const text = document.getElementById("text-input").value;
+        // Добавить проверку на пустой текст, вывести сообщение об ошибке
+        if (text) {
+          postComment(text, user.token).then((response) => {
+            renderComments(app, isPosting, isInitialLoading, response, user);
+          });
+        }
       });
     }
   }

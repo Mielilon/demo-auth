@@ -36,13 +36,16 @@ export function fetchLogin(login, password) {
   });
 }
 
-export function postComment(text, name) {
+export function postComment(text, token) {
   return fetch(host + "/comments", {
     method: "POST",
     body: JSON.stringify({
       text,
-      name,
     }),
+    headers: {
+      // Не забудьте про Bearer!
+      Authorization: `Bearer ${token}`,
+    },
   })
     .then((response) => {
       if (response.status === 500) {
