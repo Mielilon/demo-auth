@@ -1,5 +1,6 @@
 import { fetchComments, postComment } from "./api.js";
 import { renderComments } from "./renderComments.js";
+import { delay } from "./utils.js";
 
 const name = document.getElementById("name-input");
 const text = document.getElementById("text-input");
@@ -14,19 +15,13 @@ fetchComments()
   .then((data) => {
     comments = data;
     isInitialLoading = false;
-    renderComments();
+    renderComments(isInitialLoading, comments);
   })
   .catch((error) => {
     alert(error.message);
   });
 
-// тоже вынесена в модуль
-// Добавлено в 3 домашке
-const sanitizeHtml = (htmlString) => {
-  return htmlString.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-};
-
-renderComments();
+renderComments(isInitialLoading, comments);
 
 const addButton = document.getElementById("add-button");
 
@@ -39,7 +34,7 @@ const handlePostClick = () => {
   isPosting = true;
   document.querySelector(".form-loading").style.display = "block";
   document.querySelector(".add-form").style.display = "none";
-  renderComments();
+  renderComments(isInitialLoading, comments);
 
   postComment(text.value, name.value)
     .then((data) => {
@@ -49,7 +44,7 @@ const handlePostClick = () => {
       document.querySelector(".add-form").style.display = "flex";
       isPosting = false;
       comments = data;
-      renderComments();
+      renderComments(isInitialLoading, comments);
     })
     .catch((error) => {
       document.querySelector(".form-loading").style.display = "none";
@@ -73,15 +68,7 @@ const handlePostClick = () => {
       }
     });
 
-  renderComments();
+  renderComments(isInitialLoading, comments);
 };
 
 addButton.addEventListener("click", handlePostClick);
-
-function delay(data) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(data);
-    }, 300);
-  });
-}
