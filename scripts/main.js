@@ -1,3 +1,5 @@
+import { fetchComments, postComment } from "./api.js";
+
 const name = document.getElementById("name-input");
 const text = document.getElementById("text-input");
 

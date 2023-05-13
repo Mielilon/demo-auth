@@ -1,5 +1,6 @@
 const host = "https://webdev-hw-api.vercel.app/api/v1/mielilon";
-function fetchComments() {
+
+export function fetchComments() {
   return fetch(host + "/comments")
     .then((res) => res.json())
     .then((responseData) => {
@@ -22,7 +23,7 @@ function fetchComments() {
     });
 }
 
-function postComment(text, name) {
+export function postComment(text, name) {
   return fetch(host + "/comments", {
     method: "POST",
     body: JSON.stringify({
