@@ -1,3 +1,5 @@
+import { delay } from "./utils.js";
+
 const host = "https://webdev-hw-api.vercel.app/api/v1/mielilon";
 
 export function fetchComments() {
